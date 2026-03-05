@@ -1,0 +1,3 @@
+<%= render Ui::CardComponent.new(title: t("admin.profiles.edit.title"), subtitle: t("admin.profiles.edit.subtitle")) do %>
+  <%= render "admin/users/form", user: @user, url: admin_profile_path, method: :patch, submit_text: t("admin.profiles.edit.submit"), back_path: admin_profile_path, show_admin_fields: false, zones: @zones, categories: @categories %>
+<% end %>

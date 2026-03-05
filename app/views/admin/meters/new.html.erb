@@ -1,0 +1,36 @@
+<%= render Ui::CardComponent.new(title: t("admin.meters.new.title"), subtitle: t("admin.meters.new.subtitle")) do %>
+  <%= form_with model: @meter, url: admin_meters_path, method: :post, class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :serial_number, t("admin.meters.fields.serial_number"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+      <%= f.text_field :serial_number, required: true, class: "admin-input" %>
+    </div>
+    <div>
+      <%= f.label :location, t("admin.meters.fields.location"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+      <%= f.text_field :location, class: "admin-input" %>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <%= f.label :user_id, t("admin.shared.fields.user"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.select :user_id, @users.map { |u| ["#{u.name} (#{u.email})", u.id] }, { include_blank: t("admin.shared.actions.select") }, class: "admin-input" %>
+      </div>
+      <div>
+        <%= f.label :zone_id, t("admin.users.fields.zone"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.select :zone_id, @zones.map { |z| [z.name, z.id] }, { include_blank: t("admin.shared.actions.select") }, class: "admin-input" %>
+      </div>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <%= f.label :latitude, t("admin.meters.fields.latitude"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.number_field :latitude, step: 0.000001, class: "admin-input" %>
+      </div>
+      <div>
+        <%= f.label :longitude, t("admin.meters.fields.longitude"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.number_field :longitude, step: 0.000001, class: "admin-input" %>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <%= render Ui::ButtonComponent.new(text: t("admin.meters.new.submit"), type: :submit) %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.back"), href: admin_meters_path, variant: :secondary) %>
+    </div>
+  <% end %>
+<% end %>

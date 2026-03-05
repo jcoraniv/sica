@@ -1,0 +1,64 @@
+<div class="grid gap-6 lg:grid-cols-2">
+  <% editing = @zone.persisted? %>
+  <% form_url = editing ? admin_zone_path(@zone) : admin_zones_path %>
+  <% form_method = editing ? :patch : :post %>
+  <% submit_text = editing ? t("admin.zones.form.edit_submit") : t("admin.zones.form.create_submit") %>
+  <%= render Ui::CardComponent.new(title: editing ? t("admin.zones.form.edit_title") : t("admin.zones.form.new_title")) do %>
+    <%= form_with model: @zone, url: form_url, method: form_method, class: "space-y-4" do |f| %>
+      <div>
+        <%= f.label :name, t("admin.shared.fields.name"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.text_field :name, required: true, class: "admin-input" %>
+      </div>
+      <div>
+        <%= f.label :description, t("admin.shared.fields.description"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.text_area :description, rows: 3, class: "admin-input" %>
+      </div>
+      <div>
+        <div class="flex gap-2">
+          <%= render Ui::ButtonComponent.new(text: submit_text, type: :submit) %>
+          <% if editing %>
+            <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.cancel"), href: admin_zones_path, variant: :secondary) %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= render Ui::CardComponent.new(title: t("admin.zones.list.title")) do %>
+    <%= search_form_for @q, url: admin_zones_path, method: :get, html: { class: "mb-4 flex gap-2" } do |f| %>
+      <%= f.search_field :name_or_description_cont, placeholder: t("admin.zones.list.search_placeholder"), class: "admin-input" %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.search"), type: :submit) %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.clear"), href: admin_zones_path, variant: :secondary) %>
+    <% end %>
+
+    <div class="overflow-x-auto">
+      <table class="admin-table min-w-full">
+        <thead>
+          <tr>
+            <th><%= t("admin.shared.fields.name") %></th>
+            <th><%= t("admin.shared.fields.description") %></th>
+            <th><%= t("admin.shared.fields.action") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @zones.each do |zone| %>
+            <tr>
+              <td><%= zone.name %></td>
+              <td><%= zone.description.presence || t("admin.shared.empty_dash") %></td>
+              <td>
+                <%= link_to admin_zones_path(edit_id: zone.id), class: "inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white text-neutral-700 ring-1 ring-primary-200 hover:bg-primary-50", title: t("admin.shared.actions.edit_zone"), "aria-label": t("admin.shared.actions.edit_zone") do %>
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                  </svg>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= render "admin/shared/pagination", pagy: @pagy %>
+  <% end %>
+</div>

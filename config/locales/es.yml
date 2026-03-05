@@ -1,0 +1,291 @@
+es:
+  layouts:
+    application:
+      title: "SICA"
+    admin:
+      title: "Admin | SICA"
+      system_name: "Sistema de Agua"
+      panel_title: "Panel Administrativo"
+      profile: "Ver perfil"
+      logout: "Cerrar sesión"
+      navigation: "Navegación"
+      sections:
+        general: "General"
+        operations: "Operaciones"
+        management: "Administración"
+      menu:
+        dashboard: "Dashboard"
+        readings: "Lecturas"
+        invoices: "Facturas"
+        reader_zones: "Zonas"
+        payments: "Pagos"
+        users: "Usuarios"
+        zones: "Zonas"
+        categories: "Categorías"
+        meters: "Medidores"
+
+  enums:
+    invoice:
+      status:
+        pending: "Pendiente"
+        paid: "Pagada"
+    user:
+      role:
+        admin: "Administrador"
+        lecturador: "Lecturador"
+        socio: "Socio"
+        usuario: "Usuario"
+
+  controllers:
+    application:
+      not_authorized: "No autorizado"
+    admin:
+      shared:
+        unauthorized: "No autorizado"
+      users:
+        created: "Usuario creado"
+        updated: "Usuario actualizado"
+        assignments_updated: "Asignaciones actualizadas"
+      readings:
+        created: "Lectura registrada"
+        updated: "Lectura actualizada"
+      invoices:
+        generated: "Factura generada"
+        updated: "Factura actualizada"
+        paid_immutable: "La factura pagada no se puede editar"
+      meters:
+        created: "Medidor creado"
+        updated: "Medidor actualizado"
+        deleted: "Medidor eliminado"
+        cannot_delete_with_readings: "No se puede eliminar un medidor con lecturas"
+      payments:
+        created: "Pago registrado"
+        updated: "Pago actualizado"
+      categories:
+        created: "Categoría creada"
+        updated: "Categoría actualizada"
+      zones:
+        created: "Zona creada"
+        updated: "Zona actualizada"
+      profiles:
+        updated: "Perfil actualizado"
+
+  admin:
+    shared:
+      empty_dash: "-"
+      units:
+        m3: "m3"
+      fields:
+        action: "Acción"
+        amount: "Monto"
+        date: "Fecha"
+        description: "Descripción"
+        invoice: "Factura"
+        meter: "Medidor"
+        name: "Nombre"
+        notes: "Notas"
+        read_at: "Fecha/hora"
+        status: "Estado"
+        user: "Usuario"
+      actions:
+        back: "Volver"
+        cancel: "Cancelar"
+        clear: "Limpiar"
+        search: "Buscar"
+        save: "Guardar"
+        save_changes: "Guardar cambios"
+        select: "Seleccionar"
+        edit_category: "Editar categoría"
+        edit_invoice: "Editar factura"
+        edit_payment: "Editar pago"
+        edit_reading: "Editar lectura"
+        edit_user: "Editar usuario"
+        edit_zone: "Editar zona"
+        delete_meter: "Eliminar medidor"
+
+    dashboard:
+      stats:
+        users: "Usuarios"
+        meters: "Medidores"
+        pending_invoices: "Facturas pendientes"
+        total_due: "Total adeudado"
+      consumption:
+        title: "Consumo mensual (m3)"
+        subtitle: "Tendencia del consumo en el tiempo"
+      latest_invoices:
+        title: "Últimas facturas"
+        headers:
+          due_at: "Vence"
+
+    categories:
+      fields:
+        price_per_m3: "Precio por m3"
+        price_m3_short: "Precio m3"
+        surcharge_percentage: "Recargo (%)"
+        surcharge_short: "Recargo"
+      form:
+        new_title: "Nueva categoría"
+        edit_title: "Editar categoría"
+        create_submit: "Crear categoría"
+        edit_submit: "Editar categoría"
+      list:
+        title: "Categorías registradas"
+        search_placeholder: "Buscar categoría"
+
+    zones:
+      form:
+        new_title: "Nueva zona"
+        edit_title: "Editar zona"
+        create_submit: "Crear zona"
+        edit_submit: "Editar zona"
+      list:
+        title: "Zonas registradas"
+        search_placeholder: "Buscar zona"
+
+    invoices:
+      index:
+        title: "Facturas"
+        pdf: "PDF"
+        headers:
+          issued_at: "Emisión"
+      edit:
+        title: "Editar factura"
+        subtitle: "Solo facturas pendientes"
+        fields:
+          due_at: "Fecha de vencimiento"
+
+    readings:
+      fields:
+        previous_reading: "Lectura anterior"
+        current_reading: "Lectura actual"
+      index:
+        title: "Lecturas"
+        new: "Nueva lectura"
+        search_placeholder: "Medidor o usuario"
+        generate_invoice: "Generar factura"
+        headers:
+          consumption: "Consumo"
+      new:
+        title: "Registrar lectura"
+        subtitle: "Lectura por medidor en zona asignada"
+        submit: "Guardar lectura"
+      edit:
+        title: "Editar lectura"
+        subtitle: "Actualiza lectura mientras la factura esté pendiente"
+
+    meters:
+      fields:
+        serial_number: "Serie"
+        location: "Ubicación"
+        latitude: "Latitud"
+        longitude: "Longitud"
+        no_location: "Sin ubicación"
+      index:
+        title: "Medidores"
+        subtitle: "Listado y edición rápida"
+        new: "Nuevo medidor"
+        search_placeholder: "Serie, ubicación o usuario"
+        confirm_delete: "¿Eliminar medidor?"
+      new:
+        title: "Nuevo medidor"
+        subtitle: "Registrar medidor y asignarlo a usuario/zona"
+        submit: "Crear medidor"
+
+    payments:
+      form:
+        card_title: "Registrar pago"
+        create_submit: "Registrar pago"
+        edit_submit: "Editar pago"
+        fields:
+          pending_invoice: "Factura pendiente"
+          edited_amount: "Monto editado"
+          paid_amount: "Monto pagado"
+          paid_at: "Fecha de pago"
+      list:
+        title: "Pagos recientes"
+        search_admin: "Administrador"
+        search_invoice: "Factura #"
+        headers:
+          admin: "Admin"
+
+    users:
+      fields:
+        username: "Username"
+        email: "Email"
+        phone: "Teléfono"
+        address: "Dirección"
+        role: "Rol"
+        zone: "Zona"
+        category: "Categoría"
+        no_zone: "Sin zona"
+        no_category: "Sin categoría"
+        password: "Contraseña"
+        password_confirmation: "Confirmación"
+      new:
+        title: "Nuevo usuario"
+        subtitle: "Creación de cuenta con rol, zona y categoría"
+        submit: "Crear usuario"
+      edit:
+        title: "Editar usuario"
+        subtitle: "Actualización de datos del usuario"
+      index:
+        title: "Usuarios"
+        subtitle: "Listado de usuarios y asignaciones"
+        new: "Nuevo usuario"
+        search_placeholder: "Username, nombre o email"
+
+    profiles:
+      show:
+        title: "Mi perfil"
+        subtitle: "Datos personales y cuenta"
+        edit: "Editar perfil"
+        meters_title: "Medidores asignados"
+        meters_subtitle: "Código/serie de medidor"
+        no_meter: "No tienes medidor asignado."
+      edit:
+        title: "Editar mi perfil"
+        subtitle: "Actualiza tus datos personales"
+        submit: "Guardar perfil"
+
+    reader_zones:
+      index:
+        title: "Zonas asignadas"
+        subtitle: "Vista rápida de zonas y medidores"
+        view_map: "Ver mapa"
+        assigned_meters: "medidores asignados"
+      show:
+        title: "Mapa de zona"
+        subtitle: "%{zone} · %{count} medidores con ubicación"
+        no_markers: "No hay medidores con latitud/longitud registrada en esta zona."
+        missing_google_maps_key: "Falta configurar GOOGLE_MAPS_API_KEY para mostrar Google Maps."
+
+  dashboard:
+    home:
+      title: "Dashboard Agua Potable"
+      charts:
+        monthly_consumption: "Consumo mensual (m3)"
+        monthly_billing: "Facturación mensual"
+
+  devise:
+    failure:
+      invalid: "Usuario o contraseña inválidos."
+      unauthenticated: "Debes iniciar sesión para continuar."
+      timeout: "Tu sesión expiró. Inicia sesión nuevamente."
+      already_authenticated: "Ya iniciaste sesión."
+    sessions:
+      signed_in: "Sesión iniciada correctamente."
+      signed_out: "Sesión cerrada correctamente."
+      already_signed_out: "La sesión ya estaba cerrada."
+      new:
+        system_name: "Sistema de Agua"
+        title: "Acceso administrativo"
+        subtitle: "Ingresa para continuar al panel de control."
+        username: "Usuario"
+        submit: "Ingresar"
+        forgot_password: "¿Olvidaste tu contraseña?"
+
+  activerecord:
+    attributes:
+      user:
+        password: "Contraseña"
+        remember_me: "Recordarme"

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || t("layouts.application.title") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "https://www.gstatic.com/charts/loader.js", defer: true %>
+    <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/chartkick@5.0.1/dist/chartkick.min.js", defer: true %>
+  </head>
+
+  <body class="bg-primary-50 text-neutral-800 antialiased">
+    <div class="mx-auto w-full max-w-md px-4 pt-4">
+      <% if notice.present? %>
+        <p class="rounded-xl bg-primary-100 px-4 py-3 text-sm text-primary-800 ring-1 ring-primary-200"><%= notice %></p>
+      <% end %>
+      <% if alert.present? %>
+        <p class="rounded-xl bg-danger-50 px-4 py-3 text-sm text-danger-700 ring-1 ring-danger-200"><%= alert %></p>
+      <% end %>
+    </div>
+    <%= yield %>
+  </body>
+</html>

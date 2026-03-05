@@ -1,0 +1,51 @@
+<%= form_with model: user, url: url, method: method, class: "grid gap-4 md:grid-cols-2 lg:grid-cols-4" do |f| %>
+  <div>
+    <%= f.label :username, t("admin.users.fields.username"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+    <%= f.text_field :username, required: true, class: "admin-input" %>
+  </div>
+  <div>
+    <%= f.label :name, t("admin.shared.fields.name"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+    <%= f.text_field :name, required: true, class: "admin-input" %>
+  </div>
+  <div>
+    <%= f.label :email, t("admin.users.fields.email"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+    <%= f.email_field :email, required: true, class: "admin-input" %>
+  </div>
+  <div>
+    <%= f.label :phone, t("admin.users.fields.phone"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+    <%= f.text_field :phone, required: true, class: "admin-input" %>
+  </div>
+  <div>
+    <%= f.label :address, t("admin.users.fields.address"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+    <%= f.text_field :address, class: "admin-input" %>
+  </div>
+
+  <% if show_admin_fields %>
+    <div>
+      <%= f.label :role, t("admin.users.fields.role"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+      <%= f.select :role, user_role_options, {}, class: "admin-input" %>
+    </div>
+    <div>
+      <%= f.label :zone_id, t("admin.users.fields.zone"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+      <%= f.select :zone_id, zones.map { |z| [z.name, z.id] }, { include_blank: t("admin.users.fields.no_zone") }, class: "admin-input" %>
+    </div>
+    <div>
+      <%= f.label :category_id, t("admin.users.fields.category"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+      <%= f.select :category_id, categories.map { |c| [c.name, c.id] }, { include_blank: t("admin.users.fields.no_category") }, class: "admin-input" %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :password, t("admin.users.fields.password"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+    <%= f.password_field :password, class: "admin-input" %>
+  </div>
+  <div>
+    <%= f.label :password_confirmation, t("admin.users.fields.password_confirmation"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+    <%= f.password_field :password_confirmation, class: "admin-input" %>
+  </div>
+
+  <div class="md:col-span-2 lg:col-span-4 flex gap-2">
+    <%= render Ui::ButtonComponent.new(text: submit_text, type: :submit) %>
+    <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.back"), href: back_path, variant: :secondary) %>
+  </div>
+<% end %>

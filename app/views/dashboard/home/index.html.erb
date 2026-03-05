@@ -1,0 +1,15 @@
+<div class="max-w-6xl mx-auto p-6 space-y-6">
+  <h1 class="text-3xl font-bold"><%= t("dashboard.home.title") %></h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white shadow rounded p-4">
+      <h2 class="text-lg font-semibold mb-3"><%= t("dashboard.home.charts.monthly_consumption") %></h2>
+      <%= line_chart @monthly_consumption %>
+    </div>
+
+    <div class="bg-white shadow rounded p-4">
+      <h2 class="text-lg font-semibold mb-3"><%= t("dashboard.home.charts.monthly_billing") %></h2>
+      <%= column_chart @monthly_revenue %>
+    </div>
+  </div>
+</div>

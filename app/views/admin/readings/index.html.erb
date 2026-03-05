@@ -1,0 +1,54 @@
+<%= render Ui::CardComponent.new(title: t("admin.readings.index.title")) do %>
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <%= render Ui::ButtonComponent.new(text: t("admin.readings.index.new"), href: new_admin_reading_path) %>
+  </div>
+
+  <%= search_form_for @q, url: admin_readings_path, method: :get, html: { class: "mb-4 grid gap-3 md:grid-cols-4" } do |f| %>
+    <%= f.search_field :meter_serial_number_or_meter_user_name_cont, placeholder: t("admin.readings.index.search_placeholder"), class: "admin-input" %>
+    <%= f.datetime_local_field :read_at_gteq, class: "admin-input" %>
+    <%= f.datetime_local_field :read_at_lteq, class: "admin-input" %>
+    <div class="flex gap-2">
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.search"), type: :submit) %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.clear"), href: admin_readings_path, variant: :secondary) %>
+    </div>
+  <% end %>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="text-left text-neutral-500">
+        <tr>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.shared.fields.date") %></th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.shared.fields.meter") %></th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.shared.fields.user") %></th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.readings.index.headers.consumption") %></th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.shared.fields.amount") %></th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.shared.fields.action") %></th>
+        </tr>
+      </thead>
+      <tbody class="text-neutral-700">
+        <% @readings.each do |reading| %>
+          <tr>
+            <td class="py-3 pr-4"><%= l(reading.read_at, format: :short) %></td>
+            <td class="py-3 pr-4"><%= reading.meter.serial_number %></td>
+            <td class="py-3 pr-4"><%= reading.meter.user.name %></td>
+            <td class="py-3 pr-4"><%= reading.consumption_m3 %> <%= t("admin.shared.units.m3") %></td>
+            <td class="py-3 pr-4">Bs <%= number_with_precision(reading.amount_due, precision: 2) %></td>
+            <td class="py-3 pr-4 flex items-center gap-2">
+              <% if current_user.admin? %>
+                <%= link_to edit_admin_reading_path(reading), class: "inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white text-neutral-700 ring-1 ring-primary-200 hover:bg-primary-50", title: t("admin.shared.actions.edit_reading"), "aria-label": t("admin.shared.actions.edit_reading") do %>
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                  </svg>
+                <% end %>
+              <% end %>
+              <%= button_to t("admin.readings.index.generate_invoice"), admin_invoices_path(reading_id: reading.id), method: :post, class: "rounded-xl bg-primary-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-800" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+<% end %>

@@ -1,0 +1,29 @@
+<%= render Ui::CardComponent.new(title: t("admin.readings.new.title"), subtitle: t("admin.readings.new.subtitle")) do %>
+  <%= form_with url: admin_readings_path, method: :post, class: "space-y-4" do |f| %>
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <%= f.label :meter_id, t("admin.shared.fields.meter"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.select :meter_id, @meters.map { |m| ["#{m.serial_number} - #{m.user.name}", m.id] }, {}, class: "w-full rounded-xl border border-primary-200 px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :current_reading, t("admin.readings.fields.current_reading"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.number_field :current_reading, step: 0.01, required: true, class: "w-full rounded-xl border border-primary-200 px-3 py-2 text-sm" %>
+      </div>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <%= f.label :read_at, t("admin.shared.fields.read_at"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.datetime_local_field :read_at, value: Time.current.strftime("%Y-%m-%dT%H:%M"), class: "w-full rounded-xl border border-primary-200 px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :notes, t("admin.shared.fields.notes"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.text_field :notes, class: "w-full rounded-xl border border-primary-200 px-3 py-2 text-sm" %>
+      </div>
+    </div>
+
+    <div class="pt-2">
+      <%= render Ui::ButtonComponent.new(text: t("admin.readings.new.submit"), type: :submit) %>
+    </div>
+  <% end %>
+<% end %>

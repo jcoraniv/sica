@@ -1,0 +1,33 @@
+<div class="grid gap-6 lg:grid-cols-2">
+  <%= render Ui::CardComponent.new(title: t("admin.profiles.show.title"), subtitle: t("admin.profiles.show.subtitle")) do |card| %>
+    <% card.with_actions do %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.profiles.show.edit"), href: edit_admin_profile_path) %>
+    <% end %>
+
+    <div class="space-y-3 text-sm">
+      <p><span class="font-medium text-neutral-700"><%= t("admin.users.fields.username") %>:</span> <%= @user.username %></p>
+      <p><span class="font-medium text-neutral-700"><%= t("admin.shared.fields.name") %>:</span> <%= @user.name %></p>
+      <p><span class="font-medium text-neutral-700"><%= t("admin.users.fields.email") %>:</span> <%= @user.email %></p>
+      <p><span class="font-medium text-neutral-700"><%= t("admin.users.fields.phone") %>:</span> <%= @user.phone %></p>
+      <p><span class="font-medium text-neutral-700"><%= t("admin.users.fields.address") %>:</span> <%= @user.address.presence || t("admin.shared.empty_dash") %></p>
+      <p><span class="font-medium text-neutral-700"><%= t("admin.users.fields.role") %>:</span> <%= user_role_label(@user.role) %></p>
+      <p><span class="font-medium text-neutral-700"><%= t("admin.users.fields.zone") %>:</span> <%= @user.zone&.name || t("admin.users.fields.no_zone") %></p>
+      <p><span class="font-medium text-neutral-700"><%= t("admin.users.fields.category") %>:</span> <%= @user.category&.name || t("admin.users.fields.no_category") %></p>
+    </div>
+  <% end %>
+
+  <%= render Ui::CardComponent.new(title: t("admin.profiles.show.meters_title"), subtitle: t("admin.profiles.show.meters_subtitle")) do %>
+    <% if @meters.any? %>
+      <ul class="space-y-2 text-sm text-neutral-700">
+        <% @meters.each do |meter| %>
+          <li class="rounded-xl bg-neutral-50 px-3 py-2 ring-1 ring-primary-200">
+            <span class="font-medium"><%= meter.serial_number %></span>
+            <span class="text-neutral-500">· <%= meter.location.presence || t("admin.meters.fields.no_location") %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-sm text-neutral-500"><%= t("admin.profiles.show.no_meter") %></p>
+    <% end %>
+  <% end %>
+</div>

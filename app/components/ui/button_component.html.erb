@@ -1,0 +1,5 @@
+<% if href.present? %>
+  <%= link_to text, href, class: classes %>
+<% else %>
+  <button type="<%= type %>" class="<%= classes %>"><%= text %></button>
+<% end %>

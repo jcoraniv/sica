@@ -1,0 +1,35 @@
+<%= render Ui::CardComponent.new(title: t("admin.readings.edit.title"), subtitle: t("admin.readings.edit.subtitle")) do %>
+  <%= form_with model: @reading, url: admin_reading_path(@reading), method: :patch, class: "space-y-4" do |f| %>
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label class="mb-1 block text-sm font-medium text-neutral-700"><%= t("admin.shared.fields.meter") %></label>
+        <input value="<%= @reading.meter.serial_number %> - <%= @reading.meter.user.name %>" disabled class="admin-input bg-neutral-50"/>
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-neutral-700"><%= t("admin.readings.fields.previous_reading") %></label>
+        <input value="<%= @reading.previous_reading %>" disabled class="admin-input bg-neutral-50"/>
+      </div>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <%= f.label :current_reading, t("admin.readings.fields.current_reading"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.number_field :current_reading, step: 0.01, required: true, class: "admin-input" %>
+      </div>
+      <div>
+        <%= f.label :read_at, t("admin.shared.fields.read_at"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.datetime_local_field :read_at, value: @reading.read_at.strftime("%Y-%m-%dT%H:%M"), class: "admin-input" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :notes, t("admin.shared.fields.notes"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+      <%= f.text_field :notes, class: "admin-input" %>
+    </div>
+
+    <div class="flex gap-2">
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.save_changes"), type: :submit) %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.back"), href: admin_readings_path, variant: :secondary) %>
+    </div>
+  <% end %>
+<% end %>

@@ -1,0 +1,51 @@
+<%= render Ui::CardComponent.new(title: t("admin.users.index.title"), subtitle: t("admin.users.index.subtitle")) do |card| %>
+  <% card.with_actions do %>
+    <%= render Ui::ButtonComponent.new(text: t("admin.users.index.new"), href: new_admin_user_path) %>
+  <% end %>
+
+  <%= search_form_for @q, url: admin_users_path, method: :get, html: { class: "mb-4 grid gap-3 md:grid-cols-5" } do |f| %>
+    <%= f.search_field :username_or_name_or_email_cont, placeholder: t("admin.users.index.search_placeholder"), class: "admin-input" %>
+    <%= f.select :role_eq, user_role_options, { include_blank: t("admin.users.fields.role") }, class: "admin-input" %>
+    <%= f.select :zone_id_eq, @zones.map { |z| [z.name, z.id] }, { include_blank: t("admin.users.fields.zone") }, class: "admin-input" %>
+    <%= f.select :category_id_eq, @categories.map { |c| [c.name, c.id] }, { include_blank: t("admin.users.fields.category") }, class: "admin-input" %>
+    <div class="flex gap-2">
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.search"), type: :submit) %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.clear"), href: admin_users_path, variant: :secondary) %>
+    </div>
+  <% end %>
+
+  <div class="space-y-4">
+    <% @users.each do |user| %>
+      <div class="rounded-2xl bg-neutral-50 p-4 ring-1 ring-primary-200">
+        <div class="mb-3 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-neutral-900"><%= user.name %></p>
+            <p class="text-xs text-neutral-500">@<%= user.username %> · <%= user.email %> · <%= user_role_label(user.role) %></p>
+          </div>
+          <%= link_to edit_admin_user_path(user), class: "inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white text-neutral-700 ring-1 ring-primary-200 hover:bg-primary-50", title: t("admin.shared.actions.edit_user"), "aria-label": t("admin.shared.actions.edit_user") do %>
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/>
+            </svg>
+          <% end %>
+        </div>
+
+        <%= form_with url: update_assignment_admin_user_path(user), method: :patch, class: "grid gap-3 md:grid-cols-3" do |f| %>
+          <div>
+            <%= f.label :zone_id, t("admin.users.fields.zone"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+            <%= f.select :zone_id, @zones.map { |z| [z.name, z.id] }, { selected: user.zone_id }, class: "admin-input" %>
+          </div>
+          <div>
+            <%= f.label :category_id, t("admin.users.fields.category"), class: "mb-1 block text-xs font-medium text-neutral-600" %>
+            <%= f.select :category_id, @categories.map { |c| [c.name, c.id] }, { selected: user.category_id }, class: "admin-input" %>
+          </div>
+          <div class="flex items-end">
+            <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.save"), type: :submit) %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= render "admin/shared/pagination", pagy: @pagy %>
+<% end %>

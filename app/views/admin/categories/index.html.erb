@@ -1,0 +1,72 @@
+<div class="grid gap-6 lg:grid-cols-2">
+  <% editing = @category.persisted? %>
+  <% form_url = editing ? admin_category_path(@category) : admin_categories_path %>
+  <% form_method = editing ? :patch : :post %>
+  <% submit_text = editing ? t("admin.categories.form.edit_submit") : t("admin.categories.form.create_submit") %>
+  <%= render Ui::CardComponent.new(title: editing ? t("admin.categories.form.edit_title") : t("admin.categories.form.new_title")) do %>
+    <%= form_with model: @category, url: form_url, method: form_method, class: "space-y-4" do |f| %>
+      <div>
+        <%= f.label :name, t("admin.shared.fields.name"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+        <%= f.text_field :name, required: true, class: "admin-input" %>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <%= f.label :price_per_m3, t("admin.categories.fields.price_per_m3"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+          <%= f.number_field :price_per_m3, step: 0.01, required: true, class: "admin-input" %>
+        </div>
+        <div>
+          <%= f.label :surcharge_percentage, t("admin.categories.fields.surcharge_percentage"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+          <%= f.number_field :surcharge_percentage, step: 0.01, required: true, class: "admin-input" %>
+        </div>
+      </div>
+      <div>
+        <div class="flex gap-2">
+          <%= render Ui::ButtonComponent.new(text: submit_text, type: :submit) %>
+          <% if editing %>
+            <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.cancel"), href: admin_categories_path, variant: :secondary) %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= render Ui::CardComponent.new(title: t("admin.categories.list.title")) do %>
+    <%= search_form_for @q, url: admin_categories_path, method: :get, html: { class: "mb-4 flex gap-2" } do |f| %>
+      <%= f.search_field :name_cont, placeholder: t("admin.categories.list.search_placeholder"), class: "admin-input" %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.search"), type: :submit) %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.clear"), href: admin_categories_path, variant: :secondary) %>
+    <% end %>
+
+    <div class="overflow-x-auto">
+      <table class="admin-table min-w-full">
+        <thead>
+          <tr>
+            <th><%= t("admin.shared.fields.name") %></th>
+            <th><%= t("admin.categories.fields.price_m3_short") %></th>
+            <th><%= t("admin.categories.fields.surcharge_short") %></th>
+            <th><%= t("admin.shared.fields.action") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @categories.each do |category| %>
+            <tr>
+              <td><%= category.name %></td>
+              <td>Bs <%= number_with_precision(category.price_per_m3, precision: 2) %></td>
+              <td><%= number_with_precision(category.surcharge_percentage, precision: 2) %>%</td>
+              <td>
+                <%= link_to admin_categories_path(edit_id: category.id), class: "inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white text-neutral-700 ring-1 ring-primary-200 hover:bg-primary-50", title: t("admin.shared.actions.edit_category"), "aria-label": t("admin.shared.actions.edit_category") do %>
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                  </svg>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= render "admin/shared/pagination", pagy: @pagy %>
+  <% end %>
+</div>

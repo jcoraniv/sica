@@ -1,0 +1,38 @@
+<div class="min-h-screen bg-primary-50 px-4 py-12">
+  <div class="mx-auto w-full max-w-md">
+    <div class="mb-6 text-center">
+      <p class="text-xs uppercase tracking-[0.12em] text-neutral-500"><%= t("devise.sessions.new.system_name") %></p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight text-primary-900"><%= t("devise.sessions.new.title") %></h1>
+      <p class="mt-2 text-sm text-neutral-500"><%= t("devise.sessions.new.subtitle") %></p>
+    </div>
+
+    <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-primary-200">
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-4" }) do |f| %>
+        <div>
+          <%= f.label :username, t("devise.sessions.new.username"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+          <%= f.text_field :username, autofocus: true, autocomplete: "username", class: "w-full rounded-xl border border-primary-200 px-3 py-2 text-sm text-neutral-700 focus:border-primary-500 focus:ring-0" %>
+        </div>
+
+        <div>
+          <%= f.label :password, class: "mb-1 block text-sm font-medium text-neutral-700" %>
+          <%= f.password_field :password, autocomplete: "current-password", class: "w-full rounded-xl border border-primary-200 px-3 py-2 text-sm text-neutral-700 focus:border-primary-500 focus:ring-0" %>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="flex items-center gap-2">
+            <%= f.check_box :remember_me, class: "h-4 w-4 rounded border-primary-200 text-primary-600 focus:ring-primary-500" %>
+            <%= f.label :remember_me, class: "text-sm text-neutral-600" %>
+          </div>
+        <% end %>
+
+        <div class="pt-2">
+          <%= f.submit t("devise.sessions.new.submit"), class: "w-full rounded-xl bg-primary-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-600" %>
+        </div>
+      <% end %>
+
+      <div class="mt-5 text-center text-sm">
+        <%= link_to t("devise.sessions.new.forgot_password"), new_password_path(resource_name), class: "text-primary-600 hover:text-primary-700" %>
+      </div>
+    </section>
+  </div>
+</div>

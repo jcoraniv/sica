@@ -1,0 +1,50 @@
+<div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+  <%= render Ui::CardComponent.new(title: t("admin.dashboard.stats.users"), compact: true) do %>
+    <p class="text-3xl font-semibold text-neutral-900"><%= @stats[:users] %></p>
+  <% end %>
+
+  <%= render Ui::CardComponent.new(title: t("admin.dashboard.stats.meters"), compact: true) do %>
+    <p class="text-3xl font-semibold text-neutral-900"><%= @stats[:meters] %></p>
+  <% end %>
+
+  <%= render Ui::CardComponent.new(title: t("admin.dashboard.stats.pending_invoices"), compact: true) do %>
+    <p class="text-3xl font-semibold text-neutral-900"><%= @stats[:pending_invoices] %></p>
+  <% end %>
+
+  <%= render Ui::CardComponent.new(title: t("admin.dashboard.stats.total_due"), compact: true) do %>
+    <p class="text-3xl font-semibold text-neutral-900">Bs <%= number_with_precision(@stats[:total_due], precision: 2) %></p>
+  <% end %>
+</div>
+
+<%= render Ui::CardComponent.new(title: t("admin.dashboard.consumption.title"), subtitle: t("admin.dashboard.consumption.subtitle")) do %>
+  <%= line_chart @readings_chart, height: "280px", colors: ["#0f172a"] %>
+<% end %>
+
+<%= render Ui::CardComponent.new(title: t("admin.dashboard.latest_invoices.title")) do %>
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="text-left text-neutral-500">
+        <tr>
+          <th class="py-2 pr-4 font-medium">#</th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.shared.fields.user") %></th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.shared.fields.amount") %></th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.shared.fields.status") %></th>
+          <th class="py-2 pr-4 font-medium"><%= t("admin.dashboard.latest_invoices.headers.due_at") %></th>
+        </tr>
+      </thead>
+      <tbody class="text-neutral-700">
+        <% @invoices.each do |invoice| %>
+          <tr>
+            <td class="py-3 pr-4">#<%= invoice.id %></td>
+            <td class="py-3 pr-4"><%= invoice.user.name %></td>
+            <td class="py-3 pr-4">Bs <%= number_with_precision(invoice.total_amount, precision: 2) %></td>
+            <td class="py-3 pr-4">
+              <span class="<%= invoice_status_badge_class(invoice) %>"><%= invoice_status_label(invoice) %></span>
+            </td>
+            <td class="py-3 pr-4"><%= l(invoice.due_at.to_date) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

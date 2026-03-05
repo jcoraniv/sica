@@ -1,0 +1,29 @@
+<%= render Ui::CardComponent.new(title: t("admin.invoices.edit.title"), subtitle: t("admin.invoices.edit.subtitle")) do %>
+  <%= form_with model: @invoice, url: admin_invoice_path(@invoice), method: :patch, class: "space-y-4" do |f| %>
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label class="mb-1 block text-sm font-medium text-neutral-700"><%= t("admin.shared.fields.user") %></label>
+        <input value="<%= @invoice.user.name %>" disabled class="admin-input bg-neutral-50"/>
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-neutral-700"><%= t("admin.shared.fields.amount") %></label>
+        <input value="Bs <%= number_with_precision(@invoice.total_amount, precision: 2) %>" disabled class="admin-input bg-neutral-50"/>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :due_at, t("admin.invoices.edit.fields.due_at"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+      <%= f.datetime_local_field :due_at, value: @invoice.due_at.strftime("%Y-%m-%dT%H:%M"), class: "admin-input" %>
+    </div>
+
+    <div>
+      <%= f.label :notes, t("admin.shared.fields.notes"), class: "mb-1 block text-sm font-medium text-neutral-700" %>
+      <%= f.text_area :notes, rows: 3, class: "admin-input" %>
+    </div>
+
+    <div class="flex gap-2">
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.save_changes"), type: :submit) %>
+      <%= render Ui::ButtonComponent.new(text: t("admin.shared.actions.back"), href: admin_invoices_path, variant: :secondary) %>
+    </div>
+  <% end %>
+<% end %>
