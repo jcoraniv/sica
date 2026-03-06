@@ -7,8 +7,8 @@ class PaymentNotificationJob < ApplicationJob
 
     Notification.create!(
       user: invoice.user,
-      title: "Pago registrado",
-      body: "La factura ##{invoice.id} fue pagada por #{invoice.total_amount}",
+      title: I18n.t("jobs.payment_notification.title"),
+      body: I18n.t("jobs.payment_notification.body", invoice_id: invoice.id, amount: invoice.total_amount),
       kind: :payment
     )
   end

@@ -70,6 +70,53 @@ es:
       profiles:
         updated: "Perfil actualizado"
 
+  jobs:
+    payment_notification:
+      title: "Pago registrado"
+      body: "La factura #%{invoice_id} fue pagada por %{amount}"
+
+  services:
+    notifications:
+      notify_reading:
+        title: "Nueva lectura registrada"
+        body: "Se registraron %{consumption} m3. Monto: %{amount}"
+    readings:
+      create:
+        only_admin_or_reader: "Solo admin o lecturador pueden registrar lecturas"
+        meter_outside_zone: "El medidor está fuera de la zona del lecturador"
+        user_category_missing: "El usuario no tiene categoría asignada"
+      update:
+        reading_immutable_when_paid: "La lectura no se puede modificar porque la factura está pagada"
+    payments:
+      register:
+        only_admin: "Solo un administrador puede registrar pagos"
+        invoice_already_paid: "La factura ya está pagada"
+    invoices:
+      generate:
+        paid_immutable: "La factura pagada es inmutable"
+      generate_pdf:
+        title: "Boleta de Agua Potable"
+        invoice_number: "Factura #%{id}"
+        user: "Usuario: %{user}"
+        meter: "Medidor: %{meter}"
+        consumption: "Consumo (m3): %{consumption}"
+        total_amount: "Monto total: %{amount}"
+        issued_at: "Emitida: %{date}"
+        due_at: "Vence: %{date}"
+        filename: "factura_%{id}.pdf"
+
+  models:
+    meter:
+      errors:
+        zone_must_match_user_zone: "debe coincidir con la zona del usuario"
+        coordinates_presence_together: "latitud y longitud deben estar ambas presentes"
+    reading:
+      errors:
+        current_reading_not_below_previous: "debe ser mayor o igual a la lectura anterior"
+    invoice:
+      errors:
+        paid_immutable: "las facturas pagadas son inmutables"
+
   admin:
     shared:
       empty_dash: "-"

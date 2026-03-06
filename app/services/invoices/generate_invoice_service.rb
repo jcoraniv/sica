@@ -4,7 +4,7 @@ module Invoices
 
     def self.call(reading:, due_days: DEFAULT_DUE_DAYS)
       invoice = reading.invoice || Invoice.new(reading: reading, user: reading.meter.user)
-      return ServiceResult.failure(errors: ["Paid invoice is immutable"]) if invoice.persisted? && invoice.paid?
+      return ServiceResult.failure(errors: [I18n.t("services.invoices.generate.paid_immutable")]) if invoice.persisted? && invoice.paid?
 
       now = Time.current
       invoice.assign_attributes(

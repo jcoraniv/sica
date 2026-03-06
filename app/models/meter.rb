@@ -15,13 +15,13 @@ class Meter < ApplicationRecord
     return if user.blank? || zone.blank? || user.zone_id.blank?
     return if user.zone_id == zone_id
 
-    errors.add(:zone_id, "must match user's zone")
+    errors.add(:zone_id, I18n.t("models.meter.errors.zone_must_match_user_zone"))
   end
 
   def coordinates_presence_together
     return if latitude.present? && longitude.present?
     return if latitude.blank? && longitude.blank?
 
-    errors.add(:base, "latitude and longitude must both be present")
+    errors.add(:base, I18n.t("models.meter.errors.coordinates_presence_together"))
   end
 end

@@ -14,6 +14,6 @@ class Invoice < ApplicationRecord
   def immutable_when_paid
     return unless status_in_database == "paid" && changed?
 
-    errors.add(:base, "Paid invoices are immutable")
+    errors.add(:base, I18n.t("models.invoice.errors.paid_immutable"))
   end
 end

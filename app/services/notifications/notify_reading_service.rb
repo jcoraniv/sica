@@ -3,8 +3,8 @@ module Notifications
     def self.call(reading:)
       notification = Notification.new(
         user: reading.meter.user,
-        title: "Nueva lectura registrada",
-        body: "Se registraron #{reading.consumption_m3} m3. Monto: #{reading.amount_due}",
+        title: I18n.t("services.notifications.notify_reading.title"),
+        body: I18n.t("services.notifications.notify_reading.body", consumption: reading.consumption_m3, amount: reading.amount_due),
         kind: :reading
       )
 

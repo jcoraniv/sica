@@ -2,7 +2,7 @@ module Readings
   class UpdateReadingService
     def self.call(reading:, current_reading:, read_at:, notes: nil)
       if reading.invoice&.paid?
-        return ServiceResult.failure(errors: ["Reading cannot be modified because invoice is paid"])
+        return ServiceResult.failure(errors: [I18n.t("services.readings.update.reading_immutable_when_paid")])
       end
 
       category_price = reading.price_per_m3

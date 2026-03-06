@@ -14,6 +14,6 @@ class Reading < ApplicationRecord
     return if current_reading.blank? || previous_reading.blank?
     return if current_reading >= previous_reading
 
-    errors.add(:current_reading, "must be greater than or equal to previous_reading")
+    errors.add(:current_reading, I18n.t("models.reading.errors.current_reading_not_below_previous"))
   end
 end

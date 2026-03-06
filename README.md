@@ -1,28 +1,28 @@
-# SICA - Sistema de Control de Consumo de Agua Potable
+# SICA - Potable Water Consumption Control System
 
-Aplicación Rails orientada a Clean Architecture + AI-First para registrar lecturas, generar facturas/PDF, cobrar pagos y notificar automáticamente.
+Rails application built with a Clean Architecture + AI-First approach to register meter readings, generate invoices/PDFs, process payments, and trigger automatic notifications.
 
 ## Stack
 
-- Ruby 3.3 / Rails 8.0 (compatible con el diseño solicitado para Rails 7.x)
+- Ruby 3.3 / Rails 8.0 (compatible with the requested Rails 7.x architecture style)
 - PostgreSQL
-- Devise (autenticación)
-- Pundit (autorización)
-- Sidekiq (jobs)
-- Prawn (PDF)
-- Chartkick + Groupdate (dashboard)
+- Devise (authentication)
+- Pundit (authorization)
+- Sidekiq (background jobs)
+- Prawn (PDF generation)
+- Chartkick + Groupdate (dashboard charts)
 - RSpec + FactoryBot (testing)
 
-## Arquitectura
+## Architecture
 
-- `app/services/**`: casos de uso (única lógica de negocio)
-- `app/controllers/**`: delegación a services + respuesta HTTP
-- `app/models/**`: asociaciones, validaciones, scopes
-- `app/jobs/**`: tareas asíncronas
-- `app/policies/**`: reglas de autorización
-- `app/pdfs/**`: punto de entrada PDF
+- `app/services/**`: use cases (single source of business logic)
+- `app/controllers/**`: request delegation + HTTP response
+- `app/models/**`: associations, validations, scopes
+- `app/jobs/**`: asynchronous tasks
+- `app/policies/**`: authorization rules
+- `app/pdfs/**`: PDF entry points
 
-### Services implementados
+### Implemented Services
 
 - `readings/create_reading_service.rb`
 - `readings/update_reading_service.rb`
@@ -35,32 +35,32 @@ Aplicación Rails orientada a Clean Architecture + AI-First para registrar lectu
 - `users/assign_zone_service.rb`
 - `users/assign_category_service.rb`
 
-Todos retornan `ServiceResult` (`success?`, `payload`, `errors`).
+All services return `ServiceResult` (`success?`, `payload`, `errors`).
 
-## Reglas de negocio cubiertas
+## Covered Business Rules
 
-- Snapshot de precio/categoría en `Reading`.
-- Recargo solo para rol `usuario`.
-- Consumo mínimo facturable: `0`.
-- Lecturador solo registra lecturas en su zona.
-- `Reading` editable solo si `Invoice` sigue `pending`.
-- `Invoice` `paid` se considera inmutable.
-- Notificaciones disparadas por eventos (`ActiveSupport::Notifications` + jobs).
+- Price/category snapshot is stored in `Reading`.
+- Surcharge applies only to `usuario` role.
+- Minimum billable consumption: `0`.
+- A `lecturador` can only register readings in their assigned zone.
+- `Reading` can be edited only while related `Invoice` is still `pending`.
+- `Invoice` with status `paid` is immutable.
+- Notifications are event-driven (`ActiveSupport::Notifications` + jobs).
 
-## Endpoints API (JSON)
+## JSON API Endpoints
 
-Base: `/api/v1`
+Base path: `/api/v1`
 
-- `POST /readings` crear lectura
-- `PATCH /readings/:id` actualizar lectura
-- `POST /invoices` generar factura
-- `GET /invoices/:id/pdf` obtener boleta PDF
-- `POST /payments` registrar pago
-- `PATCH /users/:id/assign_zone` asignar zona
-- `PATCH /users/:id/assign_category` asignar categoría
-- `POST /meetings/notify` notificación de reunión a socios
+- `POST /readings` create reading
+- `PATCH /readings/:id` update reading
+- `POST /invoices` generate invoice
+- `GET /invoices/:id/pdf` retrieve invoice PDF
+- `POST /payments` register payment
+- `PATCH /users/:id/assign_zone` assign zone
+- `PATCH /users/:id/assign_category` assign category
+- `POST /meetings/notify` send meeting notification to members
 
-## Puesta en marcha
+## Getting Started
 
 ```bash
 bundle install
@@ -74,28 +74,28 @@ Sidekiq:
 bundle exec sidekiq
 ```
 
-## Credenciales seed
+## Seed Credentials
 
 - Admin: `admin` / `password123`
-- Lecturador: `lecturador` / `password123`
-- Socio: `socio` / `password123`
-- Usuario: `usuario` / `password123`
+- Reader (`lecturador`): `lecturador` / `password123`
+- Member (`socio`): `socio` / `password123`
+- User (`usuario`): `usuario` / `password123`
 
 ## Railway
 
-Variables mínimas:
+Minimum required environment variables:
 
 - `RAILS_MASTER_KEY`
 - `DATABASE_URL`
 - `REDIS_URL`
 - `RAILS_ENV=production`
-- `GOOGLE_MAPS_API_KEY` (para mapa de medidores por zona)
+- `GOOGLE_MAPS_API_KEY` (for zone meter map)
 
 ## CI/CD
 
-Workflow GitHub Actions en `.github/workflows/ci.yml`:
+GitHub Actions workflow at `.github/workflows/ci.yml` includes:
 
 - Brakeman
 - Bundler Audit
 - RuboCop
-- RSpec (con servicio PostgreSQL)
+- RSpec (with PostgreSQL service)
