@@ -10,6 +10,15 @@
     <%= javascript_include_tag "https://www.gstatic.com/charts/loader.js", defer: true %>
     <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/chartkick@5.0.1/dist/chartkick.min.js", defer: true %>
     <meta name="web-push-public-key" content="<%= ENV['WEB_PUSH_VAPID_PUBLIC_KEY'] %>">
+    <meta name="push-debug-unsupported-browser" content="<%= t('admin.profiles.show.push.errors.unsupported_browser') %>">
+    <meta name="push-debug-insecure-context" content="<%= t('admin.profiles.show.push.errors.insecure_context') %>">
+    <meta name="push-debug-missing-public-key" content="<%= t('admin.profiles.show.push.errors.missing_public_key') %>">
+    <meta name="push-debug-permission-denied" content="<%= t('admin.profiles.show.push.errors.permission_denied') %>">
+    <meta name="push-debug-subscription-failed" content="<%= t('admin.profiles.show.push.errors.subscription_failed') %>">
+    <meta name="push-debug-server-failed" content="<%= t('admin.profiles.show.push.errors.server_failed') %>">
+    <meta name="push-debug-disable-failed" content="<%= t('admin.profiles.show.push.errors.disable_failed') %>">
+    <meta name="push-debug-enabled" content="<%= t('admin.profiles.show.push.feedback.enabled') %>">
+    <meta name="push-debug-disabled" content="<%= t('admin.profiles.show.push.feedback.disabled') %>">
   </head>
   <body class="bg-primary-50 text-neutral-800">
     <div class="min-h-screen">
@@ -153,46 +162,58 @@
 
     <script>
       (() => {
+        const initAdminUi = () => {
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("sidebar-overlay");
         const openBtn = document.getElementById("sidebar-open");
         const closeBtn = document.getElementById("sidebar-close");
         const profileButton = document.getElementById("profile-menu-button");
         const profileMenu = document.getElementById("profile-menu");
-        if (!sidebar || !overlay || !openBtn) return;
+        if (sidebar && overlay && openBtn) {
+          const openSidebar = () => {
+            sidebar.classList.remove("-translate-x-[120%]");
+            overlay.classList.remove("hidden");
+          };
 
-        const openSidebar = () => {
-          sidebar.classList.remove("-translate-x-[120%]");
-          overlay.classList.remove("hidden");
-        };
+          const closeSidebar = () => {
+            sidebar.classList.add("-translate-x-[120%]");
+            overlay.classList.add("hidden");
+          };
 
-        const closeSidebar = () => {
-          sidebar.classList.add("-translate-x-[120%]");
-          overlay.classList.add("hidden");
-        };
+          openBtn.onclick = openSidebar;
+          if (closeBtn) closeBtn.onclick = closeSidebar;
+          overlay.onclick = closeSidebar;
 
-        openBtn.addEventListener("click", openSidebar);
-        closeBtn?.addEventListener("click", closeSidebar);
-        overlay.addEventListener("click", closeSidebar);
+          window.addEventListener("resize", () => {
+            if (window.innerWidth >= 1024) closeSidebar();
+          }, { once: true });
+        }
 
-        profileButton?.addEventListener("click", (event) => {
-          event.stopPropagation();
-          profileMenu?.classList.toggle("hidden");
-        });
+        if (profileButton && profileMenu) {
+          profileButton.onclick = (event) => {
+            event.stopPropagation();
+            profileMenu.classList.toggle("hidden");
+          };
 
-        document.addEventListener("click", (event) => {
-          if (!profileMenu || !profileButton) return;
-          if (profileMenu.contains(event.target) || profileButton.contains(event.target)) return;
-          profileMenu.classList.add("hidden");
-        });
+          document.addEventListener("click", (event) => {
+            if (profileMenu.contains(event.target) || profileButton.contains(event.target)) return;
+            profileMenu.classList.add("hidden");
+          }, { once: true });
+        }
 
-        window.addEventListener("resize", () => {
-          if (window.innerWidth >= 1024) closeSidebar();
-        });
+        const debugText = (name) => document.querySelector(`meta[name="${name}"]`)?.content || name;
 
         const registerPushSubscription = async () => {
           const publicKey = document.querySelector('meta[name="web-push-public-key"]')?.content;
-          if (!publicKey || !("serviceWorker" in navigator) || !("PushManager" in window)) return;
+          if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+            return { ok: false, reason: debugText("push-debug-unsupported-browser") };
+          }
+          if (!window.isSecureContext) {
+            return { ok: false, reason: debugText("push-debug-insecure-context") };
+          }
+          if (!publicKey) {
+            return { ok: false, reason: debugText("push-debug-missing-public-key") };
+          }
 
           const urlBase64ToUint8Array = (base64String) => {
             const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -207,7 +228,9 @@
             const registration = await navigator.serviceWorker.register("/service-worker.js");
             let permission = window.Notification?.permission;
             if (permission === "default") permission = await window.Notification.requestPermission();
-            if (permission !== "granted") return;
+            if (permission !== "granted") {
+              return { ok: false, reason: debugText("push-debug-permission-denied") };
+            }
 
             let subscription = await registration.pushManager.getSubscription();
             if (!subscription) {
@@ -216,9 +239,12 @@
                 applicationServerKey: urlBase64ToUint8Array(publicKey)
               });
             }
+            if (!subscription) {
+              return { ok: false, reason: debugText("push-debug-subscription-failed") };
+            }
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-            await fetch("<%= admin_push_subscription_path %>", {
+            const response = await fetch("<%= admin_push_subscription_path %>", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -228,12 +254,89 @@
               credentials: "same-origin",
               body: JSON.stringify({ subscription: subscription.toJSON() })
             });
+            if (!response.ok) {
+              return { ok: false, reason: `${debugText("push-debug-server-failed")} (${response.status})` };
+            }
+            return { ok: true, reason: debugText("push-debug-enabled") };
           } catch (error) {
             console.debug("Web push subscription error", error);
+            return { ok: false, reason: `${debugText("push-debug-subscription-failed")}: ${error.message}` };
           }
         };
 
-        registerPushSubscription();
+        const removePushSubscription = async () => {
+          let browserUnsubError = null;
+          try {
+            if ("serviceWorker" in navigator && "PushManager" in window) {
+              const registration = await navigator.serviceWorker.register("/service-worker.js");
+              const subscription = await registration.pushManager.getSubscription();
+              if (subscription) {
+                const unsubscribed = await subscription.unsubscribe();
+                if (!unsubscribed) browserUnsubError = "unsubscribe returned false";
+              }
+            }
+          } catch (error) {
+            browserUnsubError = error.message;
+            console.debug("Web push unsubscribe error", error);
+          }
+
+          try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            const response = await fetch("<%= admin_push_subscription_path %>", {
+              method: "DELETE",
+              headers: {
+                "X-CSRF-Token": csrfToken,
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json"
+              },
+              credentials: "same-origin"
+            });
+            if (!response.ok) {
+              return { ok: false, reason: `${debugText("push-debug-disable-failed")} (${response.status})` };
+            }
+            const reason = browserUnsubError ? `${debugText("push-debug-disabled")} (${browserUnsubError})` : debugText("push-debug-disabled");
+            return { ok: true, reason };
+          } catch (error) {
+            console.debug("Push subscription delete error", error);
+            return { ok: false, reason: `${debugText("push-debug-disable-failed")}: ${error.message}` };
+          }
+        };
+
+        const pushStatus = document.querySelector("[data-push-status]");
+        const pushToggle = document.querySelector("[data-push-toggle]");
+        const pushFeedback = document.querySelector("[data-push-feedback]");
+        const setPushUiState = (enabled) => {
+          if (pushStatus) {
+            pushStatus.textContent = enabled ? pushStatus.dataset.enabledText : pushStatus.dataset.disabledText;
+            pushStatus.classList.toggle("text-success-700", enabled);
+            pushStatus.classList.toggle("text-warning-700", !enabled);
+          }
+          if (pushToggle) pushToggle.checked = enabled;
+        };
+        const setPushFeedback = (message, isError = false) => {
+          if (!pushFeedback) return;
+          pushFeedback.textContent = message || "";
+          pushFeedback.classList.toggle("text-danger-700", isError);
+          pushFeedback.classList.toggle("text-neutral-500", !isError);
+        };
+
+        if (pushToggle) {
+          pushToggle.onchange = async (event) => {
+            pushToggle.disabled = true;
+            const shouldEnable = event.target.checked;
+            const previousState = !shouldEnable;
+            setPushUiState(shouldEnable);
+            setPushFeedback("");
+            const result = shouldEnable ? await registerPushSubscription() : await removePushSubscription();
+            if (!result.ok) setPushUiState(previousState);
+            setPushFeedback(result.reason, !result.ok);
+            pushToggle.disabled = false;
+          };
+        }
+        };
+
+        document.addEventListener("turbo:load", initAdminUi);
+        document.addEventListener("DOMContentLoaded", initAdminUi, { once: true });
       })();
     </script>
   </body>

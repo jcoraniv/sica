@@ -210,6 +210,34 @@
     @apply bg-success-50 text-success-700 ring-1 ring-success-200;
   }
 
+  .push-switch {
+    @apply relative inline-flex cursor-pointer items-center;
+  }
+
+  .push-switch-track {
+    @apply relative h-6 w-11 rounded-full bg-neutral-300 transition-colors duration-200;
+  }
+
+  .push-switch-thumb {
+    @apply absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200;
+  }
+
+  .push-switch-input:checked + .push-switch-track {
+    @apply bg-primary-500;
+  }
+
+  .push-switch-input:checked + .push-switch-track .push-switch-thumb {
+    transform: translateX(20px);
+  }
+
+  .push-switch-input:focus-visible + .push-switch-track {
+    @apply ring-2 ring-primary-300 ring-offset-2 ring-offset-white;
+  }
+
+  .push-switch-input:disabled + .push-switch-track {
+    @apply opacity-60;
+  }
+
   .admin-card {
     @apply rounded-2xl bg-white ring-1 ring-primary-200 shadow-sm;
   }

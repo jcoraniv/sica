@@ -15,7 +15,7 @@ module Notifications
           }
         }
 
-        WebPush.payload_send(
+        Webpush.payload_send(
           message: payload.to_json,
           endpoint: subscription["endpoint"],
           p256dh: subscription.dig("keys", "p256dh"),
@@ -24,7 +24,7 @@ module Notifications
         )
 
         ServiceResult.success
-      rescue WebPush::InvalidSubscription
+      rescue Webpush::InvalidSubscription
         user.update_column(:push_subscription, {})
         ServiceResult.failure(errors: [I18n.t("services.notifications.web_push.invalid_subscription")])
       rescue StandardError => e
