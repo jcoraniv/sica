@@ -95,6 +95,12 @@ Minimum required environment variables:
 - `WEB_PUSH_VAPID_PRIVATE_KEY`
 - `WEB_PUSH_VAPID_SUBJECT` (example: `mailto:admin@yourdomain.com`)
 
+Security notes:
+
+- Never commit `RAILS_MASTER_KEY`, `SECRET_KEY_BASE`, database/redis URLs, or `WEB_PUSH_VAPID_PRIVATE_KEY`.
+- `WEB_PUSH_VAPID_PUBLIC_KEY` is safe to expose to the browser.
+- Use `.env.example` as template and store real values only in Railway/GitHub secrets.
+
 ## CI/CD
 
 GitHub Actions workflow at `.github/workflows/ci.yml` includes:

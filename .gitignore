@@ -9,6 +9,18 @@
 
 # Ignore all environment files.
 /.env*
+!.env.example
+!.env.sample
+!.env.template
+
+# Ignore secret key/cert files commonly used for push and deploy
+*.pem
+*.key
+*.p8
+*.p12
+*.crt
+*.cer
+*.der
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -35,6 +47,7 @@
 /config/credentials/development.key
 /config/credentials/test.key
 /config/credentials/production.key
+/config/credentials/*.key
 
 # Ignore idea files
 .DS_Store
