@@ -69,6 +69,8 @@ es:
         updated: "Zona actualizada"
       profiles:
         updated: "Perfil actualizado"
+      push_subscriptions:
+        missing_params: "Suscripción push inválida"
 
   jobs:
     payment_notification:
@@ -80,6 +82,11 @@ es:
       notify_reading:
         title: "Nueva lectura registrada"
         body: "Se registraron %{consumption} m3. Monto: %{amount}"
+      web_push:
+        missing_subscription: "El usuario no tiene suscripción push"
+        invalid_subscription: "La suscripción push es inválida"
+        missing_vapid: "Falta configuración VAPID para Web Push"
+        delivery_failed: "No se pudo enviar la notificación push"
     readings:
       create:
         only_admin_or_reader: "Solo admin o lecturador pueden registrar lecturas"

@@ -36,7 +36,7 @@ module Sica
     # config.time_zone = "Central Time (US & Canada)"
     config.time_zone = "America/La_Paz"
     config.active_job.queue_adapter = :sidekiq
-    config.x.notifications.backend = ENV.fetch("NOTIFICATIONS_BACKEND", "inline")
+    config.x.notifications.backend = ENV.fetch("NOTIFICATIONS_BACKEND", "web_push")
     config.i18n.default_locale = :es
     config.i18n.available_locales = [ :es, :en ]
     config.i18n.fallbacks = [ :es, :en ]
