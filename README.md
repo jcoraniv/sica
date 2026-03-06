@@ -90,6 +90,7 @@ Minimum required environment variables:
 - `REDIS_URL`
 - `RAILS_ENV=production`
 - `GOOGLE_MAPS_API_KEY` (for zone meter map)
+- `NOTIFICATIONS_BACKEND` (optional: `inline`, `active_job`, `web_push`, `null`; default `inline`)
 
 ## CI/CD
 

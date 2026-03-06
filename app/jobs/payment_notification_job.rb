@@ -5,11 +5,6 @@ class PaymentNotificationJob < ApplicationJob
     invoice = Invoice.find_by(id: invoice_id)
     return if invoice.blank?
 
-    Notification.create!(
-      user: invoice.user,
-      title: I18n.t("jobs.payment_notification.title"),
-      body: I18n.t("jobs.payment_notification.body", invoice_id: invoice.id, amount: invoice.total_amount),
-      kind: :payment
-    )
+    Notifications::NotifyPaymentService.call(invoice: invoice)
   end
 end
